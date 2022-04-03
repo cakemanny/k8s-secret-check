@@ -21,5 +21,5 @@ linting and code review processes. Mistakes happen. Things go down.
 ...
 
 **k8s-secret-check** watches your secret and logs if they are invalid.
-_That's the plan at least._
+
 
