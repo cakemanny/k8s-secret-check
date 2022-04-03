@@ -1,11 +1,9 @@
 
-I'm just practising my [Rust](https://www.rust-lang.org/).
-
 ## Idea
 
 You're storing json or yaml in a secret
 
-```
+```yaml
 apiVersion: v1
 kind: Secret
 metadata:
