@@ -3,7 +3,32 @@ use kube_client::api::{Api, ResourceExt, ListParams, WatchEvent};
 use kube_client::Client;
 use k8s_openapi::api::core::v1::Secret;
 use yaml_rust::{YamlLoader};
+use serde::Serialize;
 use serde_json::Value;
+
+
+#[derive(Serialize)]
+pub enum LogSeverity {
+    DEBUG, INFO, WARNING, ERROR
+}
+
+#[derive(Serialize)]
+pub struct LogEntry {
+    severity: LogSeverity,
+    message: String,
+    // I think we could add secret name to this to be more structural
+}
+
+fn log(severity: LogSeverity, message: String) {
+    let entry = LogEntry{ severity, message };
+    // Yes, this seems a bit wrong
+    println!("{}", serde_json::to_string(&entry).unwrap());
+}
+
+fn log_debug(msg: String) { log(LogSeverity::DEBUG, msg) }
+fn log_info(msg: String) { log(LogSeverity::INFO, msg) }
+fn log_err(msg: String) { log(LogSeverity::ERROR, msg) }
+
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -19,16 +44,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     while let Some(status) = stream.try_next().await? {
         match status {
             WatchEvent::Added(s) => {
-                println!("Added {}, validating...", s.name());
+                log_info(format!("Added {}, validating...", s.name()));
                 validate_secret(s);
             },
             WatchEvent::Modified(s) => {
-                println!("Modified: {}, validating...", s.name());
+                log_info(format!("Modified {}, validating...", s.name()));
                 validate_secret(s)
             },
             WatchEvent::Deleted(_s) => {},
             WatchEvent::Bookmark(_s) => {},
-            WatchEvent::Error(s) => println!("{}", s),
+            WatchEvent::Error(s) => log_err(format!("{}", s)),
         }
     }
 
@@ -44,18 +69,20 @@ fn validate_secret(s: Secret) {
                 let secret_bytes = &data[k];
                 match validate_yaml(secret_bytes) {
                     Err(e) => {
-                        println!("{}, key {} contains invalid YAML: {}", secret_name, k, e)
+                        log_err(format!("{}, key {} contains invalid YAML: {}", secret_name, k, e))
                     }
-                    Ok(()) => { /* be silent */ }
+                    Ok(()) => {
+                        log_debug(format!("{}, key {} is valid", secret_name, k))
+                    }
                 }
             } else if k.ends_with(".json") {
                 let secret_bytes = &data[k];
                 match validate_json(secret_bytes) {
                     Err(e) => {
-                        println!("{}, key {} contains invalid JSON: {}", secret_name, k, e)
+                        log_err(format!("{}, key {} contains invalid JSON: {}", secret_name, k, e))
                     }
                     Ok(()) => {
-                        println!("{}, key {} is valid", secret_name, k)
+                        log_debug(format!("{}, key {} is valid", secret_name, k))
                     }
                 }
             }

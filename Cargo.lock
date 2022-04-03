@@ -399,6 +399,7 @@ dependencies = [
  "futures",
  "k8s-openapi",
  "kube-client",
+ "serde",
  "serde_json",
  "tokio",
  "yaml-rust",
