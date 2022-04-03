@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-secret-check
+  labels:
+    app: k8s-secret-check
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-secret-check
+  template:
+    metadata:
+      labels:
+        app: k8s-secret-check
+    spec:
+      serviceAccountName: k8s-secret-check-sa
+      containers:
+      - name: k8s-secret-check
+        image: ghcr.io/cakemanny/k8s-secret-check:0.1.0
+        imagePullPolicy: IfNotPresent

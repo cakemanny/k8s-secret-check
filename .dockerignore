@@ -1,0 +1,12 @@
+# Usual Recommendations
+.git
+*Dockerfile*
+*docker-compose*
+
+# Things from this project
+/target
+*.md
+
+# Local dev files
+.envrc
+*.swp
