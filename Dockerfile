@@ -19,5 +19,10 @@ RUN cargo install --path .
 
 FROM debian:bullseye-slim
 
+RUN useradd -u 1001 -s /bin/bash k8s-secret-check
+USER 1001
+
 COPY --from=builder /usr/local/cargo/bin/k8s-secret-check /usr/local/bin/k8s-secret-check
 CMD ["/usr/local/bin/k8s-secret-check"]
+
+LABEL org.opencontainers.image.source="https://github.com/cakemanny/gsm-controller"
