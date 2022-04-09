@@ -17,5 +17,5 @@ spec:
       serviceAccountName: k8s-secret-check-sa
       containers:
       - name: k8s-secret-check
-        image: ghcr.io/cakemanny/k8s-secret-check:0.1.0
+        image: ghcr.io/cakemanny/k8s-secret-check:0.1.1
         imagePullPolicy: IfNotPresent
