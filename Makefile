@@ -31,3 +31,7 @@ docker:
 		--platform linux/$(ARCH) \
 		-t $(IMAGE):$(VERSION) \
 		--label org.opencontainers.image.revision=$(REV)$(DIRTY)
+
+.PHONY: push
+push:
+	docker push $(IMAGE):$(VERSION)
