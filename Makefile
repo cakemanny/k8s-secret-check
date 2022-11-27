@@ -1,7 +1,7 @@
 IMAGE=ghcr.io/cakemanny/k8s-secret-check
 BRANCH=$(shell git branch --show-current)
 REV=$(shell git rev-parse --short=10 HEAD)
-ARCH=arm64
+ARCH=$(shell uname -m)
 
 ifeq "$(shell git status --short)" ""
 DIRTY=
