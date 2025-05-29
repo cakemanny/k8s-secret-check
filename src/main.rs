@@ -5,7 +5,7 @@ use kube_client::api::{Api, ResourceExt, ListParams, WatchEvent};
 use serde::Serialize;
 use serde_json::Value;
 use std::env;
-use yaml_rust::{YamlLoader};
+use yaml_rust::YamlLoader;
 use reqwest;
 
 

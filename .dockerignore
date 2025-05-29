@@ -10,3 +10,7 @@
 # Local dev files
 .envrc
 *.swp
+
+*
+!src/
+!Cargo*
