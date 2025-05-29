@@ -32,6 +32,10 @@ jobs:
 
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.9
+        with:
+          # This would be confusing because the real one runs in the docker
+          # image
+          disable_annotations: true
 
       - name: Build Image
         run: make docker

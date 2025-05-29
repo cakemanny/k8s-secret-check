@@ -44,6 +44,7 @@ RUN rm -Rf src && \
 COPY ./src/main.rs ./src/main.rs
 RUN cargo install --path .
 
+RUN /usr/bin/sccache --show-stats
 
 FROM gcr.io/distroless/cc:nonroot
 
