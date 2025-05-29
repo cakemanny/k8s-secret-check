@@ -1,4 +1,32 @@
-FROM rust:1.59.0-slim as builder
+FROM rust:1.87.0-slim AS sccache
+
+RUN apt-get update && \
+    apt-get -y --no-install-recommends install curl
+
+ENV BASE_URL=https://github.com/mozilla/sccache/releases/download \
+    VERSION=v0.10.0
+RUN curl -LO "$BASE_URL/${VERSION}/sccache-${VERSION}-$(uname -m)-unknown-linux-musl.tar.gz.sha256"
+RUN curl -LO "$BASE_URL/${VERSION}/sccache-${VERSION}-$(uname -m)-unknown-linux-musl.tar.gz"
+RUN set -eu;\
+    h=$(sha256sum sccache-${VERSION}-$(uname -m)-unknown-linux-musl.tar.gz | awk '{print $1}'); \
+    echo "$h"; \
+    g=$(cat sccache-${VERSION}-$(uname -m)-unknown-linux-musl.tar.gz.sha256); \
+    echo "$g"; \
+    test "$h" = "$g"
+RUN tar -tvf sccache-*.tar.gz
+RUN tar -xvf sccache-*.tar.gz \
+    && mv sccache-*/sccache /usr/bin/sccache
+
+FROM rust:1.87.0-slim AS builder
+COPY --from=sccache /usr/bin/sccache /usr/bin/sccache
+ENV RUSTC_WRAPPER=/usr/bin/sccache
+ARG SCCACHE_GHA_ENABLED=off
+ENV SCCACHE_GHA_ENABLED=${SCCACHE_GHA_ENABLED}
+ARG ACTIONS_RESULTS_URL
+ENV ACTIONS_RESULTS_URL=${ACTIONS_RESULTS_URL}
+ARG ACTIONS_RUNTIME_TOKEN
+ENV ACTIONS_RUNTIME_TOKEN=${ACTIONS_RUNTIME_TOKEN}
+
 
 WORKDIR /usr/src/
 RUN apt-get update && \

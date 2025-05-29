@@ -37,7 +37,10 @@ docker:
 	docker build . \
 		--platform linux/$(ARCH) \
 		-t $(IMAGE):$(VERSION) \
-		--label org.opencontainers.image.revision=$(REV)$(DIRTY)
+		--label org.opencontainers.image.revision=$(REV)$(DIRTY) \
+		--build-arg SCCACHE_GHA_ENABLED=on \
+		--build-arg ACTIONS_RESULTS_URL=$${ACTIONS_RESULTS_URL} \
+		--build-arg ACTIONS_RUNTIME_TOKEN=$${ACTIONS_RUNTIME_TOKEN}
 
 .PHONY: push
 push:
