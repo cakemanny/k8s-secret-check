@@ -39,6 +39,7 @@ docker:
 		-t $(IMAGE):$(VERSION) \
 		--label org.opencontainers.image.revision=$(REV)$(DIRTY) \
 		--build-arg SCCACHE_GHA_ENABLED=on \
+		--build-arg ACTIONS_CACHE_SERVICE_V2=on \
 		--build-arg ACTIONS_RESULTS_URL=${ACTIONS_RESULTS_URL} \
 		--secret type=env,id=ACTIONS_RUNTIME_TOKEN
 
