@@ -40,7 +40,7 @@ docker:
 		--label org.opencontainers.image.revision=$(REV)$(DIRTY) \
 		--build-arg SCCACHE_GHA_ENABLED=on \
 		--build-arg ACTIONS_RESULTS_URL=${ACTIONS_RESULTS_URL} \
-		--secret ACTIONS_RUNTIME_TOKEN=${ACTIONS_RUNTIME_TOKEN}
+		--secret actions_runtime_token=${ACTIONS_RUNTIME_TOKEN}
 
 .PHONY: push
 push:

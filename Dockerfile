@@ -34,14 +34,14 @@ WORKDIR /usr/src/k8s-secret-check
 COPY ./Cargo.toml ./Cargo.toml
 COPY ./Cargo.lock ./Cargo.lock
 # Cache build of deps
-RUN --mount=type=secret,id=ACTIONS_RUNTIME_TOKEN,env=ACTIONS_RUNTIME_TOKEN \
+RUN --mount=type=secret,id=actions_runtime_token,env=ACTIONS_RUNTIME_TOKEN \
     cargo install --path . \
     && /usr/bin/sccache --show-stats
 
 RUN rm -Rf src && \
     rm -f target/release/deps/k8s_secret_check-*
 COPY ./src/main.rs ./src/main.rs
-RUN --mount=type=secret,id=ACTIONS_RUNTIME_TOKEN,env=ACTIONS_RUNTIME_TOKEN \
+RUN --mount=type=secret,id=actions_runtime_token,env=ACTIONS_RUNTIME_TOKEN \
     cargo install --path . \
     && /usr/bin/sccache --show-stats
 
