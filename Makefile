@@ -39,8 +39,8 @@ docker:
 		-t $(IMAGE):$(VERSION) \
 		--label org.opencontainers.image.revision=$(REV)$(DIRTY) \
 		--build-arg SCCACHE_GHA_ENABLED=on \
-		--build-arg ACTIONS_RESULTS_URL=$${ACTIONS_RESULTS_URL} \
-		--build-arg ACTIONS_RUNTIME_TOKEN=$${ACTIONS_RUNTIME_TOKEN}
+		--build-arg ACTIONS_RESULTS_URL=${ACTIONS_RESULTS_URL} \
+		--secret ACTIONS_RUNTIME_TOKEN=${ACTIONS_RUNTIME_TOKEN}
 
 .PHONY: push
 push:

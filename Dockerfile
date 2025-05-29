@@ -24,9 +24,6 @@ ARG SCCACHE_GHA_ENABLED=off
 ENV SCCACHE_GHA_ENABLED=${SCCACHE_GHA_ENABLED}
 ARG ACTIONS_RESULTS_URL
 ENV ACTIONS_RESULTS_URL=${ACTIONS_RESULTS_URL}
-ARG ACTIONS_RUNTIME_TOKEN
-ENV ACTIONS_RUNTIME_TOKEN=${ACTIONS_RUNTIME_TOKEN}
-
 
 WORKDIR /usr/src/
 RUN apt-get update && \
@@ -37,14 +34,16 @@ WORKDIR /usr/src/k8s-secret-check
 COPY ./Cargo.toml ./Cargo.toml
 COPY ./Cargo.lock ./Cargo.lock
 # Cache build of deps
-RUN cargo install --path .
+RUN --mount=type=secret,id=ACTIONS_RUNTIME_TOKEN,env=ACTIONS_RUNTIME_TOKEN \
+    cargo install --path . \
+    && /usr/bin/sccache --show-stats
 
 RUN rm -Rf src && \
     rm -f target/release/deps/k8s_secret_check-*
 COPY ./src/main.rs ./src/main.rs
-RUN cargo install --path .
-
-RUN /usr/bin/sccache --show-stats
+RUN --mount=type=secret,id=ACTIONS_RUNTIME_TOKEN,env=ACTIONS_RUNTIME_TOKEN \
+    cargo install --path . \
+    && /usr/bin/sccache --show-stats
 
 FROM gcr.io/distroless/cc:nonroot
 
